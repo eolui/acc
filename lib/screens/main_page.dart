@@ -6,7 +6,7 @@ import 'more_page.dart';
 
 /// A stateful widget that represents the main page with a bottom navigation bar.
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({super.key});
 
   @override
   _MainPageState createState() => _MainPageState();

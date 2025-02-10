@@ -1,13 +1,16 @@
+import 'package:acc/models/firebaseuser.dart';
+import 'package:acc/services/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:acc/models/loginuser.dart';
 
 /// A stateless widget representing the login page.
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Controllers to manage the input of the TextFields.
-    final usernameController = TextEditingController();
+    final emailController = TextEditingController();
     final passwordController = TextEditingController();
 
     return Scaffold(
@@ -38,28 +41,27 @@ class LoginPage extends StatelessWidget {
             // Centers the content vertically.
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Username Field.
+              // Email Field.
               Row(
                 children: [
-                  // Label for the username field.
+                  // Label for the Email field.
                   const Padding(
                     padding:
                         EdgeInsets.only(right: 8.0), // Spacing to the right.
                     child: Text(
-                      'Username',
+                      'Email',
                       style: TextStyle(
                         fontFamily: 'Inter Tight', // Custom font for the label.
                         fontSize: 18, // Font size for the label text.
                       ),
                     ),
                   ),
-                  // TextField for username input.
+                  // TextField for email input.
                   Expanded(
                     child: TextField(
-                      controller:
-                          usernameController, // Controller for the field.
+                      controller: emailController, // Controller for the field.
                       decoration: InputDecoration(
-                        hintText: 'Enter your username', // Placeholder text.
+                        hintText: 'Enter your email', // Placeholder text.
                         border: OutlineInputBorder(
                           borderRadius:
                               BorderRadius.circular(8), // Rounded corners.
@@ -120,9 +122,48 @@ class LoginPage extends StatelessWidget {
                 children: [
                   // Login Button.
                   ElevatedButton(
-                    onPressed: () {
-                      // Navigates to the main page and replaces the current page.
-                      Navigator.pushReplacementNamed(context, '/main');
+                    onPressed: () async {
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
+
+                      if (email.isEmpty || password.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Please fill in all fields')),
+                        );
+                        return;
+                      }
+
+                      // Create LoginUser object
+                      final loginUser =
+                          LoginUser(email: email, password: password);
+
+                      try {
+                        print("Calling signInEmailPassword()...");
+                        //Attempt to log in using AuthService
+                        final FirebaseUser? result =
+                            await AuthService().signInEmailPassword(loginUser);
+
+                        print("signInEmailPassword() SUCCESS");
+
+                        if (result != null && result.uid != null) {
+                          print("Login successful! Navigating to main page.");
+                          //Login successful, navigate to main page
+                          Navigator.pushReplacementNamed(context, '/main');
+                        } else {
+                          print("Login failed. Reason: ${result?.code}");
+                          // Login failed, display error message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text(
+                                    'Login failed: ${result?.code ?? "Unknown error"}')),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('An error occured: $e')),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2D7815), // Button color.

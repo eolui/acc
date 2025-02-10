@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// A stateless widget that represents the Home Page in the application.
 class HomePage extends StatelessWidget {
   // Constructor for the HomePage widget.
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

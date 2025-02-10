@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "971348216048",
+    "project_id": "azcanyonapp",
+    "storage_bucket": "azcanyonapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971348216048:android:0b25ddd8ccf52390155a35",
+        "android_client_info": {
+          "package_name": "com.example.acc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA70ZyLbSZVom61cTtMvoUCKFUOgEKleKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

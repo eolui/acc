@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// A stateful widget representing the splash screen of the application.
 class SplashPage extends StatefulWidget {
-  const SplashPage({Key? key}) : super(key: key);
+  const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -21,14 +21,14 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       // Sets the background color of the splash screen.
-      backgroundColor: const Color(0xFF2D7815), // Dark green color.
+      backgroundColor: Color(0xFF2D7815), // Dark green color.
       // Centered content in the splash screen.
       body: Center(
         child: Text(
           'Az Canyon College', // App title or branding text.
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Inter Tight', // Custom font for the text.
             fontSize: 36, // Large font size for visibility.
             fontWeight: FontWeight.bold, // Bold font style for emphasis.

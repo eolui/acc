@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// A stateless widget that represents the Gym List Page in the app.
 class GymListPage extends StatelessWidget {
   // Constructor for the GymListPage widget.
-  const GymListPage({Key? key}) : super(key: key);
+  const GymListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

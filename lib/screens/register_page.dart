@@ -1,15 +1,18 @@
+import 'package:acc/models/loginuser.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:acc/services/auth.dart';
 
 /// A stateless widget representing the user registration page.
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     // Controllers to manage the input of the TextFields.
     final firstNameController = TextEditingController();
     final lastNameController = TextEditingController();
-    final usernameController = TextEditingController();
+    final emailController = TextEditingController();
     final passwordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
 
@@ -89,9 +92,9 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Username Field
+                // Email Field
                 const Text(
-                  'Username', // Label for the Username field.
+                  'Email', // Label for the Email field.
                   style: TextStyle(
                     fontFamily: 'Inter Tight',
                     fontSize: 16,
@@ -99,9 +102,9 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 TextField(
-                  controller: usernameController, // Controller for the field.
+                  controller: emailController, // Controller for the field.
                   decoration: InputDecoration(
-                    hintText: 'Enter your username', // Placeholder text.
+                    hintText: 'Enter your email', // Placeholder text.
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -162,9 +165,75 @@ class RegisterPage extends StatelessWidget {
                 // Register Button
                 Center(
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                          context, '/home'); // Navigate to Home.
+                    onPressed: () async {
+                      final firstName = firstNameController.text.trim();
+                      final lastName = lastNameController.text.trim();
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
+                      final confirmPassword =
+                          confirmPasswordController.text.trim();
+
+                      // Validate fields
+                      if (firstName.isEmpty ||
+                          lastName.isEmpty ||
+                          email.isEmpty ||
+                          password.isEmpty ||
+                          confirmPassword.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Please fill in all fields.')),
+                        );
+                        return;
+                      }
+
+                      if (password != confirmPassword) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Passwords do not match.')),
+                        );
+                        return;
+                      }
+
+                      try {
+                        // Create a LoginUser object
+                        final loginUser =
+                            LoginUser(email: email, password: password);
+
+                        // Call registerEmailPassword from AuthService
+                        final result = await AuthService()
+                            .registerEmailPassword(loginUser);
+
+                        if (result.uid != null) {
+                          // Registration successful, save firstName and lastName to Realtime Database
+                          DatabaseReference userRef = FirebaseDatabase.instance
+                              .ref()
+                              .child("users")
+                              .child(result.uid);
+
+                          await userRef.set({
+                            "firstName": firstName,
+                            "lastName": lastName,
+                            "email": email,
+                            "uid": result.uid
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Registration successful!')),
+                          );
+                          Navigator.pushReplacementNamed(context, '/login');
+                        } else {
+                          // Registration failed, show error message
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${result.code}')),
+                          );
+                        }
+                      } catch (e) {
+                        // Handle unexpected errors
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('An error occurred: $e')),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2D7815), // Button color.

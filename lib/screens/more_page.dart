@@ -1,8 +1,39 @@
+import 'package:acc/screens/login_page.dart';
+import 'package:acc/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 /// A stateless widget that represents the "More" page in the app.
 class MorePage extends StatelessWidget {
-  const MorePage({Key? key}) : super(key: key);
+  const MorePage({super.key});
+
+  // Gets current user first and last name
+  Future<Map<String, String>> fetchUserData() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        DatabaseReference userRef =
+            FirebaseDatabase.instance.ref().child("users").child(user.uid);
+
+        DatabaseEvent event = await userRef.once();
+        DataSnapshot snapshot = event.snapshot;
+
+        if (snapshot.exists) {
+          Map<dynamic, dynamic> userData =
+              snapshot.value as Map<dynamic, dynamic>;
+
+          return {
+            "firstName": userData["firstName"] ?? "Unknown",
+            "lastName": userData["lastName"] ?? "Unknown",
+          };
+        }
+      }
+    } catch (e) {
+      print("Error fetching user data: $e");
+    }
+    return {"firstName": "Error", "lastName": "Error"};
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +58,51 @@ class MorePage extends StatelessWidget {
       ),
       // SafeArea ensures content avoids notches and system UI overlays.
       body: SafeArea(
-        // Column to stack widgets vertically.
         child: Column(
           children: [
-            // Display the user's name at the top left.
-            const Align(
-              alignment: Alignment.centerLeft, // Align text to the left.
-              child: Padding(
-                padding: EdgeInsets.only(left: 15.0, top: 30.0), // Spacing.
-                child: Text(
-                  'First name + Last Name', // Placeholder for user's name.
-                  style: TextStyle(
-                    fontFamily: 'Inter Tight', // Custom font.
-                    fontSize: 20, // Font size.
-                  ),
-                ),
-              ),
+            /// **Using FutureBuilder to Fetch User Data Asynchronously**
+            FutureBuilder<Map<String, String>>(
+              future: fetchUserData(), // Calls the async function
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.only(left: 15.0, top: 30.0),
+                    child: Text(
+                      "Loading...",
+                      style: TextStyle(
+                        fontFamily: 'Inter Tight',
+                        fontSize: 20,
+                      ),
+                    ),
+                  );
+                } else if (snapshot.hasError || !snapshot.hasData) {
+                  return const Padding(
+                    padding: EdgeInsets.only(left: 15.0, top: 30.0),
+                    child: Text(
+                      "Error fetching data",
+                      style: TextStyle(
+                        fontFamily: 'Inter Tight',
+                        fontSize: 20,
+                      ),
+                    ),
+                  );
+                } else {
+                  // Successfully fetched user data
+                  String firstName = snapshot.data?["firstName"] ?? "Unknown";
+                  String lastName = snapshot.data?["lastName"] ?? "Unknown";
+
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 15.0, top: 30.0),
+                    child: Text(
+                      "$firstName $lastName",
+                      style: const TextStyle(
+                        fontFamily: 'Inter Tight',
+                        fontSize: 20,
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
             // Spacer pushes the button towards the bottom of the screen.
             const Spacer(),
@@ -51,24 +111,30 @@ class MorePage extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 // Navigates back to the login page when pressed.
-                onPressed: () {
-                  Navigator.pushNamed(context, '/login');
+                onPressed: () async {
+                  await AuthService().signOut(); // Call signOut method
+                  // Navigate to login screen and remove previous routes
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const LoginPage()), // Replace with your login screen
+                    (route) => false, // Removes all previous screens
+                  );
                 },
-                // Styling for the button.
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2D7815), // Button color.
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12), // Button padding.
+                  backgroundColor: const Color(0xFF2D7815),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8), // Rounded corners.
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                // Label for the button.
                 child: const Text(
                   'SIGN OUT',
                   style: TextStyle(
-                    fontFamily: 'Inter Tight', // Custom font for the label.
-                    color: Colors.white, // White text color.
+                    fontFamily: 'Inter Tight',
+                    color: Colors.white,
                   ),
                 ),
               ),

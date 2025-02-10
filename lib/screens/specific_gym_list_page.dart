@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// A stateless widget that represents a specific gym list page.
 class SpecificGymListPage extends StatelessWidget {
-  const SpecificGymListPage({Key? key}) : super(key: key);
+  const SpecificGymListPage({super.key});
 
   @override
   Widget build(BuildContext context) {

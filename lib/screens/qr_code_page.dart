@@ -1,8 +1,45 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 /// A stateless widget representing the QR Code page.
 class QRCodePage extends StatelessWidget {
-  const QRCodePage({Key? key}) : super(key: key);
+  const QRCodePage({super.key});
+
+  // Getting users details for QR Code
+  Future<String> fetchUserData() async {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final DatabaseReference dbRef = FirebaseDatabase.instance.ref();
+
+    User? user = auth.currentUser;
+    if (user != null) {
+      String uid = user.uid;
+      DatabaseReference userRef = dbRef.child("users").child(uid);
+
+      try {
+        final event = await userRef.once();
+        if (event.snapshot.exists) {
+          Map<dynamic, dynamic>? userData =
+              event.snapshot.value as Map<dynamic, dynamic>?;
+
+          if (userData != null) {
+            String firstName = userData['firstName'] ?? "Unknown";
+            String lastName = userData['lastName'] ?? "Unknown";
+            String email = userData['email'] ?? "No Email";
+
+            // Format the QR code data string
+            return "Name: $firstName $lastName\nEmail: $email";
+          }
+        }
+        return "User data not found";
+      } catch (e) {
+        return "Error fetching data";
+      }
+    } else {
+      return "User not logged in";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,40 +65,49 @@ class QRCodePage extends StatelessWidget {
       // SafeArea ensures the content avoids system UI overlays (e.g., notches).
       body: SafeArea(
         // Column stacks widgets vertically.
-        child: Column(
-          // Centers the content vertically in the available space.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Centered QR Code display area.
-            Center(
-              child: Container(
-                // Sets the width of the QR Code container.
-                width: 291,
-                // Sets the height of the QR Code container.
-                height: 375,
-                // Decoration for the container, including background color and rounded corners.
-                decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surface, // Background color.
-                  borderRadius:
-                      BorderRadius.circular(2), // Slightly rounded corners.
-                ),
-                // Center the text within the container.
-                child: const Center(
-                  // Placeholder text for the QR Code.
-                  child: Text(
-                    'QR Code', // Replace with a QR Code widget in the future.
-                    style: TextStyle(
-                      fontSize: 18, // Font size for the text.
-                      fontWeight: FontWeight.bold, // Bold text style.
+        child: FutureBuilder<String>(
+          future: fetchUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError || !snapshot.hasData) {
+              return const Center(child: Text("Error fetching QR Code data"));
+            }
+
+            String qrData = snapshot.data ?? "No data available";
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                    width: 291,
+                    height: 375,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 6,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: QrImageView(
+                        data: qrData,
+                        version: QrVersions.auto,
+                        size: 250.0,
+                        backgroundColor: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            const Spacer(), // Pushes any additional content toward the bottom.
-          ],
+                const SizedBox(height: 20),
+              ],
+            );
+          },
         ),
       ),
     );

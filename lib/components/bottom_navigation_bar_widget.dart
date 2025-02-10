@@ -10,10 +10,10 @@ class BottomNavigationBarWidget extends StatelessWidget {
 
   /// Constructor to initialize the required parameters [currentIndex] and [onTap].
   const BottomNavigationBarWidget({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
