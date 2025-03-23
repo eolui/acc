@@ -1,69 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 
-/// A stateless widget that represents a specific gym list page.
-class AdminScanPage extends StatelessWidget {
+class AdminScanPage extends StatefulWidget {
   const AdminScanPage({super.key});
+
+  @override
+  _AdminScanPageState createState() => _AdminScanPageState();
+}
+
+class _AdminScanPageState extends State<AdminScanPage> {
+  CameraController? _cameraController;
+  List<CameraDescription>? cameras;
+  bool isCameraReady = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeCamera();
+  }
+
+  Future<void> initializeCamera() async {
+    cameras = await availableCameras();
+    _cameraController = CameraController(
+      cameras![0],
+      ResolutionPreset.medium,
+    );
+
+    await _cameraController!.initialize();
+    if (!mounted) return;
+    setState(() {
+      isCameraReady = true;
+    });
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Scaffold provides the basic structure for the page.
       appBar: AppBar(
-        // Sets the background color of the AppBar.
-        backgroundColor: const Color(0xFF2D7815), // Dark green color.
-        // Centers the title text in the AppBar.
+        backgroundColor: const Color(0xFF2D7815),
         centerTitle: true,
-        // Adds a slight shadow under the AppBar for depth.
         elevation: 2,
-        // Title displayed in the AppBar.
         title: const Text(
-          'Az Canyon College', // Title text for the page.
+          'Az Canyon College',
           style: TextStyle(
-            fontFamily: 'Inter Tight', // Custom font for the title.
-            fontSize: 22, // Font size for the title.
-            color: Colors.white, // White color for the text.
+            fontFamily: 'Inter Tight',
+            fontSize: 22,
+            color: Colors.white,
           ),
         ),
       ),
-      // SafeArea ensures content avoids system UI overlays, like notches.
-      body: SafeArea(
-        // Column widget to arrange content vertically.
-        child: Column(
-          mainAxisAlignment:
-              MainAxisAlignment.center, // Centers content vertically.
-          children: [
-            // Main content container.
-            Center(
-              child: Container(
-                // Sets the width of the container.
-                width: 291,
-                // Sets the height of the container.
-                height: 375,
-                // Decoration for styling the container.
-                decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surface, // Background color.
-                  borderRadius:
-                      BorderRadius.circular(2), // Slightly rounded corners.
-                ),
-                // Content within the container.
-                child: const Center(
-                  // Placeholder text for specific gym list content.
-                  child: Text(
-                    'Scan Your QR Code', // Placeholder content.
-                    style: TextStyle(
-                      fontSize: 18, // Font size of the text.
-                      fontWeight: FontWeight.bold, // Bold text for emphasis.
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const Spacer(), // Pushes any additional content toward the bottom.
-          ],
-        ),
-      ),
+      body: isCameraReady
+          ? CameraPreview(_cameraController!)
+          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
