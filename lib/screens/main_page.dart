@@ -1,3 +1,4 @@
+import 'package:acc/screens/admin_scan_page.dart';
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'qr_code_page.dart';
@@ -6,7 +7,9 @@ import 'more_page.dart';
 
 /// A stateful widget that represents the main page with a bottom navigation bar.
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final bool isAdmin;
+
+  const MainPage({super.key, required this.isAdmin});
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -54,9 +57,11 @@ class _MainPageState extends State<MainPage> {
         controller: _pageController, // Controls the current page.
         // Disables swiping to switch between pages.
         physics: const NeverScrollableScrollPhysics(),
-        children: const [
+        children: [
           HomePage(), // First page: Home.
-          QRCodePage(), // Second page: QR Code.
+          widget.isAdmin
+              ? AdminScanPage()
+              : QRCodePage(), // Second page: QR Code.
           GymListPage(), // Third page: Gym List.
           MorePage(), // Fourth page: More options.
         ],
@@ -69,7 +74,7 @@ class _MainPageState extends State<MainPage> {
         selectedItemColor: Colors.white, // Color for selected items.
         unselectedItemColor: Colors.white70, // Color for unselected items.
         type: BottomNavigationBarType.fixed, // Ensures all items are displayed.
-        items: const [
+        items: [
           // Home tab.
           BottomNavigationBarItem(
             icon: Icon(Icons.home), // Icon for the Home tab.
@@ -77,8 +82,12 @@ class _MainPageState extends State<MainPage> {
           ),
           // QR Code tab.
           BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code), // Icon for the QR Code tab.
-            label: 'QR CODE', // Label for the QR Code tab.
+            icon: Icon(widget.isAdmin
+                ? Icons.scanner
+                : Icons.qr_code), // Icon for the QR Code tab.
+            label: widget.isAdmin
+                ? 'SCAN'
+                : 'QR CODE', // Label for the QR Code tab.
           ),
           // Gyms tab.
           BottomNavigationBarItem(

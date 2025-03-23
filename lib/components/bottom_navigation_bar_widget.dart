@@ -1,26 +1,36 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 /// A stateless widget representing a bottom navigation bar with navigation functionality.
 class BottomNavigationBarWidget extends StatelessWidget {
   // The currently selected index of the navigation bar.
   final int currentIndex;
-
   // A callback function triggered when a navigation item is tapped, passing the selected index.
   final ValueChanged<int> onTap;
+  final bool isAdmin;
 
   /// Constructor to initialize the required parameters [currentIndex] and [onTap].
   const BottomNavigationBarWidget({
     super.key,
     required this.currentIndex,
     required this.onTap,
+    required this.isAdmin,
   });
 
   @override
   Widget build(BuildContext context) {
+    // Get the current user logged in
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String? email = user?.email; // Get the email
+    // Check if the user's email is "admin@gmail.com"
+    final bool isAdmin = user?.email == "adminscan@gmail.com";
+
     // A list of routes corresponding to each navigation item.
     final List<String> routes = [
       '/home', // Route for the "Home" page (index 0).
-      '/qrCode', // Route for the "QR CODE" page (index 1).
+      isAdmin
+          ? '/scan'
+          : '/qrCode', // Admin goes to /scan, anyone else to /qrCode
       '/gymList', // Route for the "GYMS" page (index 2).
       '/more', // Route for the "MORE" page (index 3).
     ];
@@ -50,14 +60,16 @@ class BottomNavigationBarWidget extends StatelessWidget {
         // Ensures all items are displayed with fixed widths.
         type: BottomNavigationBarType.fixed,
         // List of items in the bottom navigation bar.
-        items: const [
+        items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home), // Home icon.
             label: 'Home', // Label for the "Home" item.
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code), // QR code icon.
-            label: 'QR CODE', // Label for the "QR CODE" item.
+            icon: Icon(isAdmin
+                ? Icons.scanner
+                : Icons.qr_code), // Changes icon dynamically
+            label: isAdmin ? 'SCAN' : 'QR CODE', // Changes label dynamically
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.sports_gymnastics), // Gymnastics icon.

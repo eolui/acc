@@ -1,5 +1,7 @@
 import 'package:acc/models/firebaseuser.dart';
+import 'package:acc/screens/main_page.dart';
 import 'package:acc/services/auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:acc/models/loginuser.dart';
 
@@ -149,7 +151,16 @@ class LoginPage extends StatelessWidget {
                         if (result != null && result.uid != null) {
                           print("Login successful! Navigating to main page.");
                           //Login successful, navigate to main page
-                          Navigator.pushReplacementNamed(context, '/main');
+
+                          final user = FirebaseAuth.instance.currentUser;
+                          final isAdmin = user?.email == 'adminscan@gmail.com';
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MainPage(isAdmin: isAdmin),
+                            ),
+                          );
                         } else {
                           print("Login failed. Reason: ${result?.code}");
                           // Login failed, display error message
