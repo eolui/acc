@@ -18,9 +18,10 @@ class GymMeterWidget extends StatelessWidget {
 
         final data = snapshot.data!.data() as Map<String, dynamic>;
         final curOccupancy = data['curOccupancy'] ?? 0;
-        final maxOccupancy =
-            data['maxOccupancy'] ?? 50; // Set or fetch this from Firestore
+        final maxOccupancy = data['maxOccupancy'] ??
+            50; // If null/empty, maxOcc will be set to 50
 
+        // Occupancy Meter calculation
         final double percentFull =
             (curOccupancy / maxOccupancy).clamp(0.0, 1.0);
 

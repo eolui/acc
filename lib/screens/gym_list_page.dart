@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../components/gym_meter_widget.dart'; // ✅ Import the widget
+import '../components/gym_meter_widget.dart';
 
 /// Gym List Page in the app.
 class GymListPage extends StatefulWidget {
@@ -28,6 +28,7 @@ class _GymListPageState extends State<GymListPage> {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
+        // Accessing gyms DB
         stream: FirebaseFirestore.instance.collection('gyms').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -55,12 +56,13 @@ class _GymListPageState extends State<GymListPage> {
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  subtitle: GymMeterWidget(gymId: gymId), // ✅ Meter here
+                  // Occupancy Meter
+                  subtitle: GymMeterWidget(gymId: gymId),
                   onTap: () {
                     Navigator.pushNamed(
                       context,
                       '/specificGymList',
-                      arguments: gymId, // Pass the gym's document ID
+                      arguments: gymId,
                     );
                   },
                 ),

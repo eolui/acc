@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
             ),
           );
         } else if (snapshot.hasData) {
+          // Only these emails, when logged in, will have the SCAN option on nav bar
           final String? email = snapshot.data?.email;
           final List<String> adminEmails = [
             'tempeadmin@gmail.com',
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
 
           final bool isAdmin = adminEmails.contains(email);
 
-          // ✅ User is logged in, send to MainPage with admin info
+          // User is logged in, send to MainPage
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Az Canyon College',
@@ -55,7 +56,6 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.green,
               fontFamily: 'Inter Tight',
             ),
-            // ✅ Use home instead of routes for MainPage
             home: MainPage(isAdmin: isAdmin),
             routes: {
               '/splash': (context) => const SplashPage(),
@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
             },
           );
         } else {
-          // ✅ Not logged in, show login screen
+          // Not logged in
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Az Canyon College',

@@ -23,6 +23,7 @@ class SpecificGymListPage extends StatelessWidget {
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
+        // Retrieve the clicked gym's info
         stream: FirebaseFirestore.instance
             .collection('gyms')
             .doc(gymId)

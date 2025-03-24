@@ -13,9 +13,12 @@ class AdminScanPage extends StatefulWidget {
 }
 
 class _AdminScanPageState extends State<AdminScanPage> {
+  // CameraX
   CameraController? _cameraController;
   List<CameraDescription>? cameras;
   bool isCameraReady = false;
+
+  // Code Scanner
   final BarcodeScanner barcodeScanner = BarcodeScanner();
   bool isProcessing = false; // To prevent double scans
 
@@ -25,12 +28,13 @@ class _AdminScanPageState extends State<AdminScanPage> {
     initializeCamera();
   }
 
+  // Initializing camera for scanning
   Future<void> initializeCamera() async {
     cameras = await availableCameras();
     _cameraController = CameraController(
       cameras![0],
       ResolutionPreset.medium,
-      enableAudio: false, // Optional: You don’t need audio
+      enableAudio: false,
     );
 
     await _cameraController!.initialize();
@@ -39,15 +43,16 @@ class _AdminScanPageState extends State<AdminScanPage> {
       isCameraReady = true;
     });
 
-    // ✅ Start image stream for scanning
+    // Start image stream for scanning
     _cameraController!.startImageStream((CameraImage image) {
       if (!isProcessing) {
         isProcessing = true;
-        processCameraImage(image); // 🔥 Call your barcode scan here
+        processCameraImage(image);
       }
     });
   }
 
+  // Processing what the camera sees
   Future<void> processCameraImage(CameraImage image) async {
     try {
       final WriteBuffer allBytes = WriteBuffer();
@@ -59,25 +64,25 @@ class _AdminScanPageState extends State<AdminScanPage> {
       final Size imageSize =
           Size(image.width.toDouble(), image.height.toDouble());
 
-      // ✅ Use InputImageMetadata instead of InputImageData
+      // Image details etc
       final inputImage = InputImage.fromBytes(
         bytes: bytes,
         metadata: InputImageMetadata(
           size: imageSize,
-          rotation: InputImageRotation.rotation0deg, // Adjust this if needed
+          rotation: InputImageRotation.rotation0deg,
           format: InputImageFormat.yuv420,
           bytesPerRow: image.planes.first.bytesPerRow,
         ),
       );
 
-      // ✅ Process the image with MLKit
+      // Process the image with MLKit
       final barcodes = await barcodeScanner.processImage(inputImage);
 
       if (barcodes.isNotEmpty) {
         final scannedUser = barcodes.first.rawValue;
-        print('✅ Scanned User Data: $scannedUser');
+        print('Scanned User Data: $scannedUser');
 
-        // ✅ Identify which gym the admin is scanning for
+        // Identify which gym the user is scanning for
         final adminEmail = FirebaseAuth.instance.currentUser?.email;
         final gymId = getGymIdFromAdmin(adminEmail);
 
@@ -89,7 +94,7 @@ class _AdminScanPageState extends State<AdminScanPage> {
             'curOccupancy': FieldValue.increment(1),
           });
 
-          // ✅ Optional: Log the user check-in if needed
+          //Log the user check-in if needed
           await FirebaseFirestore.instance
               .collection('gyms')
               .doc(gymId)
@@ -99,6 +104,7 @@ class _AdminScanPageState extends State<AdminScanPage> {
             'timestamp': FieldValue.serverTimestamp(),
           });
 
+          // Success check-in pop up
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Check-in successful at $gymId')),
           );
@@ -121,6 +127,7 @@ class _AdminScanPageState extends State<AdminScanPage> {
     super.dispose();
   }
 
+  // Depending on which admin is logged in, the scanner will incremet that respective gym counter
   String getGymIdFromAdmin(String? email) {
     switch (email) {
       case 'tempeadmin@gmail.com':

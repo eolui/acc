@@ -21,6 +21,8 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
+
+      // Smaller version of the widget used in gym_list_page.dart
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('gyms').snapshots(),
         builder: (context, snapshot) {
@@ -32,7 +34,7 @@ class HomePage extends StatelessWidget {
             return const Center(child: Text('No gyms found.'));
           }
 
-          // 🔥 Limit to first 3 gyms
+          // Limit to first 3 gyms
           final gyms = snapshot.data!.docs.take(3).toList();
 
           return ListView.builder(

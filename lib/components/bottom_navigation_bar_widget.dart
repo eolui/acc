@@ -1,15 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-/// A stateless widget representing a bottom navigation bar with navigation functionality.
+/// A stateless widget
 class BottomNavigationBarWidget extends StatelessWidget {
-  // The currently selected index of the navigation bar.
   final int currentIndex;
-  // A callback function triggered when a navigation item is tapped, passing the selected index.
   final ValueChanged<int> onTap;
   final bool isAdmin;
 
-  /// Constructor to initialize the required parameters [currentIndex] and [onTap].
+  /// Constructor
   const BottomNavigationBarWidget({
     super.key,
     required this.currentIndex,
@@ -22,7 +20,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
     // Get the current user logged in
     final User? user = FirebaseAuth.instance.currentUser;
     final String? email = user?.email; // Get the email
-    // Check if the user's email is "admin@gmail.com"
+    // Check if the user's email is "...admin@gmail.com"
     final List<String> adminEmails = [
       'tempeadmin@gmail.com',
       'scottsdaleadmin@gmail.com',
@@ -38,16 +36,16 @@ class BottomNavigationBarWidget extends StatelessWidget {
 
     // A list of routes corresponding to each navigation item.
     final List<String> routes = [
-      '/home', // Route for the "Home" page (index 0).
+      '/home', // Route for the "Home" page
       isAdmin
           ? '/scan'
           : '/qrCode', // Admin goes to /scan, anyone else to /qrCode
-      '/gymList', // Route for the "GYMS" page (index 2).
-      '/more', // Route for the "MORE" page (index 3).
+      '/gymList', // Route for the "GYMS" page
+      '/more', // Route for the "MORE" page
     ];
 
     return Container(
-      // A decoration to give the navigation bar a background color.
+      // Navigation bar's background color.
       decoration: const BoxDecoration(
         color: Color(0xFF2D7815), // Dark green color.
       ),
