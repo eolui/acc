@@ -153,7 +153,19 @@ class LoginPage extends StatelessWidget {
                           //Login successful, navigate to main page
 
                           final user = FirebaseAuth.instance.currentUser;
-                          final isAdmin = user?.email == 'adminscan@gmail.com';
+                          final List<String> adminEmails = [
+                            'tempeadmin@gmail.com',
+                            'scottsdaleadmin@gmail.com',
+                            'phoenixadmin@gmail.com',
+                            'peoriaadmin@gmail.com',
+                            'mesaadmin@gmail.com',
+                            'glendaleadmin@gmail.com',
+                            'gilbertadmin@gmail.com',
+                            'chandleradmin@gmail.com',
+                          ];
+
+                          final bool isAdmin =
+                              adminEmails.contains(user?.email);
 
                           Navigator.pushReplacement(
                             context,

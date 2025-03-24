@@ -34,7 +34,18 @@ class MyApp extends StatelessWidget {
           );
         } else if (snapshot.hasData) {
           final String? email = snapshot.data?.email;
-          final bool isAdmin = email == "adminscan@gmail.com";
+          final List<String> adminEmails = [
+            'tempeadmin@gmail.com',
+            'scottsdaleadmin@gmail.com',
+            'phoenixadmin@gmail.com',
+            'peoriaadmin@gmail.com',
+            'mesaadmin@gmail.com',
+            'glendaleadmin@gmail.com',
+            'gilbertadmin@gmail.com',
+            'chandleradmin@gmail.com',
+          ];
+
+          final bool isAdmin = adminEmails.contains(email);
 
           // ✅ User is logged in, send to MainPage with admin info
           return MaterialApp(

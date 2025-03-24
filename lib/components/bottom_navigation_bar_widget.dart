@@ -23,7 +23,18 @@ class BottomNavigationBarWidget extends StatelessWidget {
     final User? user = FirebaseAuth.instance.currentUser;
     final String? email = user?.email; // Get the email
     // Check if the user's email is "admin@gmail.com"
-    final bool isAdmin = user?.email == "adminscan@gmail.com";
+    final List<String> adminEmails = [
+      'tempeadmin@gmail.com',
+      'scottsdaleadmin@gmail.com',
+      'phoenixadmin@gmail.com',
+      'peoriaadmin@gmail.com',
+      'mesaadmin@gmail.com',
+      'glendaleadmin@gmail.com',
+      'gilbertadmin@gmail.com',
+      'chandleradmin@gmail.com',
+    ];
+
+    final bool isAdmin = adminEmails.contains(email);
 
     // A list of routes corresponding to each navigation item.
     final List<String> routes = [
