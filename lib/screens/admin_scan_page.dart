@@ -108,7 +108,7 @@ class _AdminScanPageState extends State<AdminScanPage> {
         }
       }
     } catch (e) {
-      print('❌ Error during barcode scan: $e');
+      print('Error during barcode scan: $e');
     } finally {
       isProcessing = false;
     }
