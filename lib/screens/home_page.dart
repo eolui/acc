@@ -23,6 +23,7 @@ class HomePage extends StatelessWidget {
       ),
 
       // Smaller version of the widget used in gym_list_page.dart
+      // This only displays 3 of all the gyms - specific gym list click still works
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('gyms').snapshots(),
         builder: (context, snapshot) {

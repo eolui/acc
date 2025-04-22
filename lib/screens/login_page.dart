@@ -5,7 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:acc/models/loginuser.dart';
 
-/// A stateless widget representing the login page.
+//--------------------------------------------------------
+//          LOGIN PAGE
+//--------------------------------------------------------
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 

@@ -4,7 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-/// A stateless widget that represents the "More" page in the app.
+//--------------------------------------------------------
+//                MORE PAGE
+//--------------------------------------------------------
 class MorePage extends StatelessWidget {
   const MorePage({super.key});
 
@@ -30,8 +32,10 @@ class MorePage extends StatelessWidget {
         }
       }
     } catch (e) {
+      // Return error if can't get user's first and last name
       print("Error fetching user data: $e");
     }
+    // Display ERROR wheere first and last name would be
     return {"firstName": "Error", "lastName": "Error"};
   }
 

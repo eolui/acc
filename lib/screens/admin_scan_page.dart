@@ -5,6 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart'; // for WriteBuffer
 import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart'; // for InputImageData, BarcodeScanner
 
+//--------------------------------------------------------
+//            ADMIN SCAN PAGE
+//--------------------------------------------------------
 class AdminScanPage extends StatefulWidget {
   const AdminScanPage({super.key});
 
@@ -86,6 +89,7 @@ class _AdminScanPageState extends State<AdminScanPage> {
         final adminEmail = FirebaseAuth.instance.currentUser?.email;
         final gymId = getGymIdFromAdmin(adminEmail);
 
+        // Update occupancy of the gym user is scanning for
         if (gymId.isNotEmpty) {
           await FirebaseFirestore.instance
               .collection('gyms')

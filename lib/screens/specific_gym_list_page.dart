@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//---------------------------------------------------------
+//              SPECIFIC GYM LIST PAGE
+//---------------------------------------------------------
+// Displays info of the gym the user clicked on.
+//---------------------------------------------------------
 class SpecificGymListPage extends StatelessWidget {
   const SpecificGymListPage({super.key});
 

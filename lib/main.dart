@@ -10,6 +10,9 @@ import 'screens/login_page.dart';
 import 'screens/register_page.dart';
 import 'screens/main_page.dart';
 
+//----------------------------------
+//          MAIN
+//----------------------------------
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

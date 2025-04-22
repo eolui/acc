@@ -2,6 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/loginuser.dart';
 import '../models/firebaseuser.dart';
 
+//-------------------------------------------------------
+//          FIREBASE AUTH SERVICE
+//-------------------------------------------------------
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -25,6 +28,7 @@ class AuthService {
 
   get authStateChanges => null;
 
+  // Sign in with email and password using FirebaseAuth
   Future signInEmailPassword(LoginUser login) async {
     print("signInEmailPassword() started...");
 
@@ -34,7 +38,7 @@ class AuthService {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(
               email: login.email.trim(), password: login.password.trim());
-
+      // Login success
       print("Firebase sign-in completed");
 
       User? user = userCredential.user;
@@ -58,6 +62,7 @@ class AuthService {
     }
   }
 
+  // Register user's account
   Future registerEmailPassword(LoginUser login) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -77,6 +82,7 @@ class AuthService {
     }
   }
 
+  // Sign out Method
   Future<void> signOut() async {
     try {
       await _auth.signOut();

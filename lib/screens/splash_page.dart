@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// A stateful widget representing the splash screen of the application.
+//---------------------------------------------------------
+//          SPLASH SCREEN
+//---------------------------------------------------------
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 

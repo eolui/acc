@@ -1,7 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-/// A stateless widget
+//------------------------------------------------------
+//      BOTTOM NAV BAR WIDGET
+//------------------------------------------------------
+
 class BottomNavigationBarWidget extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -21,6 +24,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
     final User? user = FirebaseAuth.instance.currentUser;
     final String? email = user?.email; // Get the email
     // Check if the user's email is "...admin@gmail.com"
+    // List of all ADMIN accounts
     final List<String> adminEmails = [
       'tempeadmin@gmail.com',
       'scottsdaleadmin@gmail.com',

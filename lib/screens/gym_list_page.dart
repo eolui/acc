@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../components/gym_meter_widget.dart';
 
-/// Gym List Page in the app.
+//--------------------------------------------------------
+//            GYM'S LIST PAGE
+//--------------------------------------------------------
 class GymListPage extends StatefulWidget {
   const GymListPage({super.key});
 
@@ -34,7 +36,7 @@ class _GymListPageState extends State<GymListPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
+          // If this happens, sum wrong happened
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(child: Text('No gyms found.'));
           }

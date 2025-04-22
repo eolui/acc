@@ -3,7 +3,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:acc/services/auth.dart';
 
-/// A stateless widget representing the user registration page.
+//---------------------------------------------------------
+//            REGISTER PAGE
+//---------------------------------------------------------
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
 
